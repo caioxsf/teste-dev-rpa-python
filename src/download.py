@@ -74,4 +74,3 @@ def run_threads():
             except Exception as e:
                 print(f"Erro em uma das threads: {e}")
                 
-run_threads()
