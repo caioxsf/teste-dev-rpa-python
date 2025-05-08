@@ -32,9 +32,7 @@ def download_file(url, recursos_button, selector_button_download, name_thread):
     try:
         driver.get(url)
         wait = WebDriverWait(driver, 10)
-        # clicar pra abrir o recursos 
         recursos = wait.until(EC.element_to_be_clickable((By.XPATH, recursos_button))).click()
-        # faz o download da bombeta do csv ;----------;
         download = wait.until(EC.element_to_be_clickable((By.XPATH, selector_button_download))).click()
         
         # ( eu sei que era melhor fazer uma função pra verificar se não terminou o download por conta de arquivos grandes :) )
