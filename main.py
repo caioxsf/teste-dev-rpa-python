@@ -13,6 +13,7 @@ def main():
     run_threads()
     analyze = AnalyzeData(DOWNLOAD_DIR, files)
     analyze.load_data()
+    analyze.cross_data()
     
 if __name__ == "__main__":
     main()

@@ -30,3 +30,17 @@ class AnalyzeData():
             for future in concurrent.futures.as_completed(futures):
                 name, df = future.result()
                 self.dataframes[name] = df
+                
+    def cross_data(self):
+        print("[CRUZAMENTO] Iniciando cruzamento de dados...")
+        
+        df_obitos = self.dataframes.get("obitos")
+        df_contratacao = self.dataframes.get("contratacao")
+        
+        df_contratacao['VALOR'] = (df_contratacao['VALOR'].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False).astype(float))
+        value_organ = df_contratacao.groupby('ORGAO_ENTIDADE')['VALOR'].sum()
+        
+        contract_object = df_contratacao.groupby('CONTRATADO').apply(lambda group: '\n'.join(f"- {obj} (R$ {valor:,.2f})" for obj, valor in zip(group['OBJETO'], group['VALOR'])))
+
+        print(value_organ)
+        print(contract_object)
