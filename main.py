@@ -6,7 +6,7 @@ DOWNLOAD_DIR = os.path.join(os.getcwd(), "data")
 
 files = {
     "obitos": "obitos-confirmados-covid-19.csv",
-    "contratacao": "contratacao-aquisicao-covid-excell-csv.csv"
+    "casos": "XLSX_Painel_2020.xlsx"
 }
 
 def main():
