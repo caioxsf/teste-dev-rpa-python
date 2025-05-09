@@ -33,8 +33,9 @@ def download_file(url, recursos_button, selector_button_download, name_thread):
         driver.get(url)
         wait = WebDriverWait(driver, 10)
         
-        if recursos_button:
-            recursos = wait.until(EC.element_to_be_clickable((By.XPATH, recursos_button))).click()
+        if recursos_button is not None:
+            recursos = wait.until(EC.element_to_be_clickable((By.XPATH, recursos_button)))
+            recursos.click()
         download = wait.until(EC.element_to_be_clickable((By.XPATH, selector_button_download))).click()
         
         # ( eu sei que era melhor fazer uma função pra verificar se não terminou o download por conta de arquivos grandes :) )
@@ -55,7 +56,7 @@ sites = [
     },
     {
         "url": "https://sescloud.saude.mg.gov.br/index.php/s/ZEzzC8jFpobXGjM?path=%2FPAINEL_COVID",
-        "recursos_button": '',
+        "recursos_button": None,
         "selector_button_download": '//*[@id="fileList"]/tr[2]/td[2]/a',
         "name_thread": "casos_coronavirus" 
     }

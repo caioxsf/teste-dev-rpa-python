@@ -1,0 +1,6 @@
+selenium
+matplotlib
+seaborn
+pandas
+openpyxl
+webdriver-manager
