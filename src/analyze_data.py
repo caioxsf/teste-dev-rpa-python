@@ -1,6 +1,10 @@
+from src.graphics import GraphicsData
 import pandas as pd
 import os
 import concurrent.futures
+from unidecode import unidecode
+
+graphics_data = GraphicsData()
 
 class AnalyzeData():
     def __init__(self,download_dir,files):
@@ -14,7 +18,7 @@ class AnalyzeData():
             print(f"[{name}] Carregando dados...")
             
             if path.endswith(".csv"):
-                df = pd.read_csv(path, sep=";") # o sep=";" é pq os arquivos da segunda planilha tao separado por ;
+                df = pd.read_csv(path, sep=";")
             elif path.endswith(".xlsx"):
                 df = pd.read_excel(path, engine="openpyxls")
                 
@@ -39,8 +43,37 @@ class AnalyzeData():
         
         df_contratacao['VALOR'] = (df_contratacao['VALOR'].astype(str).str.replace('.', '', regex=False).str.replace(',', '.', regex=False).astype(float))
         value_organ = df_contratacao.groupby('ORGAO_ENTIDADE')['VALOR'].sum()
+        total_value = value_organ.sum()
         
-        contract_object = df_contratacao.groupby('CONTRATADO').apply(lambda group: '\n'.join(f"- {obj} (R$ {valor:,.2f})" for obj, valor in zip(group['OBJETO'], group['VALOR'])))
+        abreviacoes = {
+            "Respirador purificador de ar tipo pecas semifacial filtrante classe PFF2 (N95)": "Respirador PFF2",
+            "Mascara cirurgica descartavel com 3 camadas": "Máscara 3 camadas",
+            "Mascaras, luvas, aventais e alcool": "Kit proteção",
+            "Protetores Faciais": "Protetor facial",
+            "oculos de Protecao": "Óculos",
+            "Luvas para procedimentos e Gorros descartaveis": "Luvas e gorros",
+            "Luvas e gorros": "Luvas e gorros",
+            "Luvas": "Luvas",
+            "Mascaras": "Máscaras",
+            "Aventais": "Aventais",
+            "Saco para obito": "Saco para óbito",
+            "Fornecimento de cestas basicas as familias de estudantes matriculados na Rede Municipal de Ensino e Rede Parceira": "Cestas básicas",
+            "Aquisicao de 5.000 (cinco mil) litros de alcool etilico 70% a serem usados pelos agentes da Guarda Civil Municipal de BH, o Centro Integrado de Operacões de Belo Horizonte – COP-BH e o Centro Integrado de Atencao a Mulher – CIAM, areas da SMSP que, juntamente com a GCMBH, estao atuando efetivamente para o bom funcionamento de nossa cidade e, ainda, para um melhor acolhimento dos cidadaos nesse periodo de restricões e contingenciamento.": "Álcool 70%",
+            "Aquisicao de 10.000 (dez mil) unidades de mascaras cirurgicas, 3 camadas, para uso dos agentes da Guarda Civil Municipal de BH de forma preventiva contra  COVID 1, conforme orientado pela OMS.": "Máscara 3 camadas",
+            "Aquisicao de 10.000 pares de luvas cirurgicas": "Luvas",
+            "Aquisicao de colheres e marmitas descartaveis": "Marmitas",
+            "Aquisicao de Respiradores categoria PFF2 contra agentes biologicos": "Respirador PFF2",
+            "oculos de protecao": "Óculos",
+            "Mascaras Cirurgicas com 3 camadas": "Máscara 3 camadas"
+        }
 
-        print(value_organ)
-        print(contract_object)
+        df_contratacao["OBJETO_NORMALIZADO"] = df_contratacao["OBJETO"].apply(lambda x: unidecode(str(x)).lower())
+        abreviacoes_normalizadas = {
+            unidecode(k).lower(): v for k, v in abreviacoes.items()
+        }
+        df_contratacao["OBJETO_ABREVIADO"] = df_contratacao["OBJETO_NORMALIZADO"].map(abreviacoes_normalizadas).fillna("Outros")
+        value_object = df_contratacao.groupby("OBJETO_ABREVIADO")["VALOR"].sum()
+        value_object = value_object.sort_values(ascending=False)
+        
+        graphics_data.contract_graphic_organ_value(value_organ, total_value)
+        graphics_data.contract_graphic_object_items(value_object)
