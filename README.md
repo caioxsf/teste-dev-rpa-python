@@ -5,7 +5,6 @@ Este projeto executa um processo de RPA utilizando Python dentro de um container
 ## 🐳 Requisitos
 
 - [Docker](https://www.docker.com/) instalado na sua máquina.
-- Diretórios `data/` e `image-graphic/` criados na raiz do projeto (serão usados para armazenar arquivos de saída).
 
 # 🚧 Build da Imagem
 
