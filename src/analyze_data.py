@@ -52,4 +52,4 @@ class AnalyzeData():
         df_final["CONFIRMADOS"] = df_final["CONFIRMADOS"].fillna(0).astype(int)
         df_final = df_final[df_final["DATA_OBITO"].dt.month <= 7]
 
-        graphics_data.gerar_graficos(df_final)
+        graphics_data.covid_graphic(df_final)

@@ -10,7 +10,7 @@ class GraphicsData:
         os.makedirs(self.output_dir, exist_ok=True)
         sns.set(style="whitegrid")
         
-    def gerar_graficos(self, df_final):
+    def covid_graphic(self, df_final):
 
         sns.set(style="whitegrid")
 

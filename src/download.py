@@ -10,12 +10,21 @@ from selenium.common.exceptions import WebDriverException
 import time
 import concurrent.futures
 import os
+from pathlib import Path
 
 DOWNLOAD_DIR = os.path.join(os.getcwd(), "data")
 
+def wait_download(download_dir, name_file, timeout=60):
+    path_file = Path(download_dir) / name_file
+    start = time.time()
+    while not path_file.exists():
+        if time.time() - start > timeout:
+            raise TimeoutError(f"Download do arquivo '{name_file}' não concluído após {timeout} segundos.")
+        time.sleep(1)
+            
+
 @retry(stop=stop_after_attempt(3), wait=wait_fixed(1), reraise=True)
 def download_file(url, recursos_button, selector_button_download, name_thread):
-    print(f"[{name_thread}] Iniciando...")
     chrome_options = Options()
     chrome_options.add_argument("--headless=new")
     chrome_options.add_argument("--no-sandbox")
@@ -39,13 +48,18 @@ def download_file(url, recursos_button, selector_button_download, name_thread):
         if recursos_button is not None:
             recursos = wait.until(EC.element_to_be_clickable((By.XPATH, recursos_button)))
             recursos.click()
+        print(f"[{name_thread}] Iniciando download...")
         download = wait.until(EC.element_to_be_clickable((By.XPATH, selector_button_download))).click()
         
-        # ( eu sei que era melhor fazer uma função pra verificar se não terminou o download por conta de arquivos grandes :) )
-        time.sleep(10)
+        print(f"[{name_thread}] Aguardando download concluir...")
+        if name_thread == "obitos_confirmados_coronavirus":
+            wait_download(DOWNLOAD_DIR, "obitos-confirmados-covid-19.csv")
+        elif name_thread == "casos_coronavirus":
+            wait_download(DOWNLOAD_DIR, "XLSX_Painel_2020.xlsx")
+            
         print(f"[{name_thread}] Download concluído.")
         
-    except Exception as e:
+    except Exception as e:  
         print(f"[{name_thread}] Erro: {e}")
         raise
     finally:
@@ -68,6 +82,7 @@ sites = [
 
 
 def run_threads():
+    os.makedirs('data', exist_ok=True)
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(sites)) as executor:
         futures = [
             executor.submit(download_file, site["url"], site["recursos_button"], site["selector_button_download"], site["name_thread"])
@@ -79,5 +94,6 @@ def run_threads():
                 future.result()
             except Exception as e:
                 print(f"Erro em uma das threads: {e}")
+                
                 
                 
