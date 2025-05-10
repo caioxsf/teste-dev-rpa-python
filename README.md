@@ -21,7 +21,7 @@ A execução do container varia conforme o terminal que você estiver utilizando
 ```
 docker run --rm -v "%cd%\data:/app/data" -v "%cd%\image-graphic:/app/image-graphic" teste-rpa
 ```
-##🔹 PowerShell
+## 🔹 PowerShell
 ```
 docker run --rm -v "${PWD}\data:/app/data" -v "${PWD}\image-graphic:/app/image-graphic" teste-rpa
 ```
