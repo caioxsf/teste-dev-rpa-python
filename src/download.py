@@ -19,7 +19,8 @@ def wait_download(download_dir, name_file, timeout=60):
     start = time.time()
     while not path_file.exists():
         if time.time() - start > timeout:
-            raise TimeoutError(f"Download do arquivo '{name_file}' não concluído após {timeout} segundos.")
+            print(f"Download do arquivo '{name_file}' não concluído após {timeout} segundos.")
+            return
         time.sleep(1)
             
 
