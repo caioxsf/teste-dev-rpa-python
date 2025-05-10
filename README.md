@@ -7,14 +7,14 @@ Este projeto executa um processo de RPA utilizando Python dentro de um container
 - [Docker](https://www.docker.com/) instalado na sua máquina.
 - Diretórios `data/` e `image-graphic/` criados na raiz do projeto (serão usados para armazenar arquivos de saída).
 
-## 🚧 Build da Imagem
+# 🚧 Build da Imagem
 
 Para construir a imagem Docker do projeto, execute o seguinte comando no terminal dentro da pasta do projeto:
 
 ```
 docker build -t teste-rpa .
 ```
-## 🚀 Executando o Container
+# 🚀 Executando o Container
 A execução do container varia conforme o terminal que você estiver utilizando:
 
 # 🔹 CMD (Prompt de Comando do Windows)
