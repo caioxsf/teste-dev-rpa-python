@@ -17,15 +17,15 @@ docker build -t teste-rpa .
 # 🚀 Executando o Container
 A execução do container varia conforme o terminal que você estiver utilizando:
 
-# 🔹 CMD (Prompt de Comando do Windows)
+## 🔹 CMD (Prompt de Comando do Windows)
 ```
 docker run --rm -v "%cd%\data:/app/data" -v "%cd%\image-graphic:/app/image-graphic" teste-rpa
 ```
-# 🔹 PowerShell
+##🔹 PowerShell
 ```
 docker run --rm -v "${PWD}\data:/app/data" -v "${PWD}\image-graphic:/app/image-graphic" teste-rpa
 ```
-# 🔹 WSL ou Linux
+## 🔹 WSL ou Linux
 💡 Se estiver usando Git Bash no Windows, entre no WSL antes de executar este comando.
 ```
 docker run --rm -v "$(pwd)/data:/app/data" -v "$(pwd)/image-graphic:/app/image-graphic" teste-rpa
