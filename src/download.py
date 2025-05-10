@@ -5,12 +5,15 @@ from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
+from tenacity import retry, stop_after_attempt, wait_fixed
+from selenium.common.exceptions import WebDriverException
 import time
 import concurrent.futures
 import os
 
 DOWNLOAD_DIR = os.path.join(os.getcwd(), "data")
 
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(1), reraise=True)
 def download_file(url, recursos_button, selector_button_download, name_thread):
     print(f"[{name_thread}] Iniciando...")
     chrome_options = Options()
@@ -32,7 +35,7 @@ def download_file(url, recursos_button, selector_button_download, name_thread):
     try:
         driver.get(url)
         wait = WebDriverWait(driver, 10)
-        
+        time.sleep(4)
         if recursos_button is not None:
             recursos = wait.until(EC.element_to_be_clickable((By.XPATH, recursos_button)))
             recursos.click()
@@ -44,6 +47,7 @@ def download_file(url, recursos_button, selector_button_download, name_thread):
         
     except Exception as e:
         print(f"[{name_thread}] Erro: {e}")
+        raise
     finally:
         driver.quit()
         
@@ -62,6 +66,7 @@ sites = [
     }
 ]
 
+
 def run_threads():
     with concurrent.futures.ThreadPoolExecutor(max_workers=len(sites)) as executor:
         futures = [
@@ -74,4 +79,5 @@ def run_threads():
                 future.result()
             except Exception as e:
                 print(f"Erro em uma das threads: {e}")
+                
                 

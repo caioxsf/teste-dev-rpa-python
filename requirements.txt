@@ -4,3 +4,4 @@ seaborn
 pandas
 openpyxl
 webdriver-manager
+tenacity
