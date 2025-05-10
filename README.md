@@ -1,6 +1,6 @@
 # 🐍 Teste RPA com Docker
 
-Este projeto executa um processo de RPA utilizando Python dentro de um container Docker. O código realiza tarefas automatizadas e armazena dados e imagens geradas em diretórios locais mapeados.
+Este teste executa um processo de RPA utilizando Python dentro de um container Docker. O código realiza tarefas automatizadas e armazena dados e imagens geradas em diretórios locais mapeados.
 
 ## 🐳 Requisitos
 
