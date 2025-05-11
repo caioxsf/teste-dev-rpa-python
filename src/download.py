@@ -6,7 +6,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from webdriver_manager.chrome import ChromeDriverManager
 from tenacity import retry, stop_after_attempt, wait_fixed
-from selenium.common.exceptions import WebDriverException
 import time
 import concurrent.futures
 import os
@@ -47,22 +46,35 @@ def download_file(url, recursos_button, selector_button_download, name_thread):
         wait = WebDriverWait(driver, 10)
         time.sleep(4)
         if recursos_button is not None:
-            recursos = wait.until(EC.element_to_be_clickable((By.XPATH, recursos_button)))
-            recursos.click()
-        print(f"[{name_thread}] Iniciando download...")
-        download = wait.until(EC.element_to_be_clickable((By.XPATH, selector_button_download))).click()
+            if name_thread == 'obitos_confirmados_coronavirus':
+                try:
+                    recursos = wait.until(EC.element_to_be_clickable((By.XPATH, recursos_button)))
+                    recursos.click()
+                except Exception as e:
+                    print(f"[{name_thread}] Botão de recursos não encontrado!")
         
-        print(f"[{name_thread}] Aguardando download concluir...")
-        if name_thread == "obitos_confirmados_coronavirus":
-            wait_download(DOWNLOAD_DIR, "obitos-confirmados-covid-19.csv")
-        elif name_thread == "casos_coronavirus":
-            wait_download(DOWNLOAD_DIR, "XLSX_Painel_2020.xlsx")
+        try:    
+            try:     
+                print(f"[{name_thread}] Iniciando download...")
+                download = wait.until(EC.element_to_be_clickable((By.XPATH, selector_button_download))).click()
+            except Exception as e:
+                print(f"[{name_thread}] Arquivo não encontrado para fazer o download! Erro: {e}")
+                raise SystemExit(f"Erro fatal: {e}")
+                
+            print(f"[{name_thread}] Aguardando download concluir...")
+            if name_thread == "obitos_confirmados_coronavirus":
+                wait_download(DOWNLOAD_DIR, "obitos-confirmados-covid-19.csv")
+            elif name_thread == "casos_coronavirus":
+                wait_download(DOWNLOAD_DIR, "XLSX_Painel_2020.xlsx")
+            print(f"[{name_thread}] Download concluído.")
             
-        print(f"[{name_thread}] Download concluído.")
+        except Exception as e:
+            print(f"[{name_thread}] Erro: {e}")
         
     except Exception as e:  
         print(f"[{name_thread}] Erro: {e}")
         raise
+
     finally:
         driver.quit()
         
