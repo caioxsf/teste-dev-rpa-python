@@ -8,7 +8,6 @@ class GraphicsData:
     def __init__(self, output_dir="image-graphic"):
         self.output_dir = output_dir
         os.makedirs(self.output_dir, exist_ok=True)
-        sns.set(style="whitegrid")
         
     def covid_graphic(self, df_final):
 
